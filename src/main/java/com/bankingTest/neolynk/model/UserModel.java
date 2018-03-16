@@ -1,6 +1,5 @@
 package com.bankingTest.neolynk.model;
 
-import com.bankingTest.neolynk.core.Core;
 
 import java.util.UUID;
 
