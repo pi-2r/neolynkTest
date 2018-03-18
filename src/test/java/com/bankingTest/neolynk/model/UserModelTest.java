@@ -160,9 +160,50 @@ public class UserModelTest extends AbstractIntegrationTest{
         Assert.assertEquals(count, 3);
     }
 
+    @Test
+    public void createSaveUserAndCheckUUID() throws Exception{
+        UserModel newFakeUser = createFakeUser();
+        LOG.debug(newFakeUser.toString());
+        core.saveUserEntity(newFakeUser, newFakeUser.getIdUser());
+        Assert.assertNotNull(core.getSpecificUser(newFakeUser.getIdUser()));
+
+    }
+
     @After
     public void deleteHasMap() {
         core.getUserList().clear();
     }
 
+    @Test
+    public void createSaveUserAndCreateAccountForDeleting() throws Exception{
+        //---- create user
+        UserModel newFakeUser = createFakeUser();
+        LOG.debug(newFakeUser.toString());
+        core.saveUserEntity(newFakeUser, newFakeUser.getIdUser());
+        Assert.assertNotNull(core.getSpecificUser(newFakeUser.getIdUser()));
+
+        //--- create account
+        AccountModel newAccountModel = createFakeAccount();
+        LOG.debug(newAccountModel.toString());
+        Assert.assertNotNull(newAccountModel);
+
+        //--- check if ok
+        UserModel specificUser = core.getSpecificUser(newFakeUser.getIdUser());
+        Assert.assertEquals(newFakeUser.getEmail(), specificUser.getEmail());
+
+        //--- link account with a user
+        accountCore.saveAccountEntityWithUser(newAccountModel, newAccountModel.getIdAccount(), newFakeUser.getIdUser());
+        AccountModel tmpAccount =  accountCore.getSpecificAccount(newAccountModel.getIdAccount());
+        Assert.assertNotNull(accountCore.getSpecificAccount(newAccountModel.getIdAccount()));
+        Assert.assertEquals(tmpAccount.getUserId(), newFakeUser.getIdUser());
+
+        //--- delete user
+        core.delteSpecificUserById(newFakeUser.getIdUser());
+        //-- check if is good == user ---> null
+        Assert.assertNull(core.getSpecificUser(newFakeUser.getIdUser()));
+
+        //--- delete account from specific user
+        accountCore.deleteSpecificAccountByUserId(newFakeUser.getIdUser());
+        Assert.assertNull(accountCore.getSpecificAccount(newAccountModel.getIdAccount()));
+    }
 }

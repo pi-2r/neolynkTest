@@ -1,24 +1,35 @@
 package com.bankingTest.neolynk.enums;
 
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by zen on 16/03/18.
  */
+
 public enum AccountTypeEnum {
 
-    LIVRET_A(1, "LIVRET_A"),
-    LIVRET_B(2, "LIVRET_B"),
-    LIVRET_GOLD(3, "LIVRET_GOLD");
+    LIVRET_A("LIVRET_A: small client"),
+    LIVRET_B("LIVRET_B: correct client"),
+    LIVRET_GOLD("LIVRET_GOLD: big client");
 
-    private final int id;
-    private final String accountName;
+    private static final Map<String, AccountTypeEnum> accountType =new HashMap<String, AccountTypeEnum>();
 
-    AccountTypeEnum(int id, String accountName) {
-        this.id = id;
-        this.accountName = accountName;
+    static {
+        for (AccountTypeEnum value : EnumSet.allOf(AccountTypeEnum.class)) {
+            accountType.put(value.name(), value);
+        }
     }
 
+    private String descrption;
 
-    public int getId() {return id;}
-    public String getaccountName() {return accountName;}
+    AccountTypeEnum(String descrption) {
+        this.descrption = descrption;
+    }
+
+    public static AccountTypeEnum forName(String name) {return accountType.get(name);}
+    public static String descriptionName(String name) {return accountType.get(name).descrption;}
 
 }
+

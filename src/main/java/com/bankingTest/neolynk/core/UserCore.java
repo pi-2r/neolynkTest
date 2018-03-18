@@ -1,29 +1,25 @@
 package com.bankingTest.neolynk.core;
 
-import com.bankingTest.neolynk.model.AccountModel;
 import com.bankingTest.neolynk.model.UserModel;
-import com.bankingTest.neolynk.utils.Tools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 /**
  * Created by zen on 16/03/18.
  */
-public class UserCore {
+public class UserCore extends AbstractCore {
 
-    //---- record all user
-    private HashMap<UUID, UserModel> userList= new HashMap<>();
-
-    //---- record account
-    public Map<UUID, AccountModel> accountList = Collections.synchronizedMap(new HashMap<UUID, AccountModel>());
-
-    Tools tools =  new Tools();
+    /** The application logger */
+    private static final Logger LOG = LoggerFactory.getLogger(UserCore.class);
 
     /**
      * get all user list
      * @return
      */
     public HashMap<UUID, UserModel> getUserList(){
+        LOG.debug("need all user in list");
         return userList;
     }
 
@@ -34,6 +30,7 @@ public class UserCore {
      * @return
      */
     public UserModel saveUserEntity (UserModel userModel, UUID uuid){
+        LOG.debug("save user in list with uuid:{}", uuid);
         return userList.put(uuid, userModel);
     }
 
@@ -44,8 +41,10 @@ public class UserCore {
      */
     public UserModel getSpecificUser(UUID value) {
         if (checkIfUserExist(value)){
+            LOG.debug("get user with {} uuid", value);
            return userList.get(value);
         }
+        LOG.debug("user with {} uuid not foud", value);
         return null;
     }
 
@@ -56,8 +55,10 @@ public class UserCore {
      */
     public UserModel delteSpecificUserById(UUID value) {
         if (checkIfUserExist(value)){
+            LOG.debug("delete user with {} uuid ", value);
             return userList.remove(value);
         }
+        LOG.debug("can't delete user with {} uuid ", value);
         return null;
     }
 
@@ -66,10 +67,12 @@ public class UserCore {
      * @param value
      * @return
      */
-    private Boolean checkIfUserExist(UUID value){
+    public Boolean checkIfUserExist(UUID value){
         if (userList.containsKey(value)) {
+            LOG.debug("user with {} uuid exist", value);
             return true;
         }
+        LOG.debug("user with {} uuid doesn't exist", value);
         return false;
     }
 
@@ -84,6 +87,8 @@ public class UserCore {
         if (checkIfUserExist(value)){
             UserModel editUser = userList.get(value);
 
+            LOG.debug("change {} parameter with this value: {}, for the user with {} uuid", changeValue, keyName, value);
+
             if ("firstName".equals(keyName)){
                 editUser.setFirstName(changeValue);
             }else if ("lastName".equals(keyName)) {
@@ -95,13 +100,14 @@ public class UserCore {
             }else if ("email".equals(keyName)) {
                 editUser.setEmail(changeValue);
             }else if ("age".equals(keyName)) {
-                if (tools.IsInt_ByException(changeValue)) {
+                if (tools.checkIfInteger(changeValue)) {
                     editUser.setAge(Integer.valueOf(changeValue));
                 }
             }
             //--- save update about user
            return userList.put(value, editUser);
         }
+        LOG.debug("Can't change {} parameter with this value: {}, for the user with {} uuid", value, keyName, changeValue);
         return null;
     }
 

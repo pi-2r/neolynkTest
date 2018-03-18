@@ -1,8 +1,6 @@
 package com.bankingTest.neolynk.model;
 
 import com.bankingTest.neolynk.enums.AccountTypeEnum;
-
-import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -15,7 +13,14 @@ public class AccountModel {
     private String dateOfCreation;
     private Double balance;
     private AccountTypeEnum typeOfAccount;
+    private UUID userId;
 
+    /**
+     * Constructor
+     * @param dateOfCreation
+     * @param balance
+     * @param typeOfAccount
+     */
     public AccountModel(String dateOfCreation, Double balance, AccountTypeEnum typeOfAccount) {
         this.idAccount = UUID.randomUUID();
         this.dateOfCreation = dateOfCreation;
@@ -32,14 +37,17 @@ public class AccountModel {
     public void setBalance(Double balance) {this.balance = balance;}
     public AccountTypeEnum getTypeOfAccount() {return typeOfAccount;}
     public void setTypeOfAccount(AccountTypeEnum typeOfAccount) {this.typeOfAccount = typeOfAccount;}
+    public UUID getUserId() {return userId;}
+    public void setUserId(UUID userId) {this.userId = userId;}
 
     @Override
     public String toString() {
         return "AccountModel{" +
                 "idAccount=" + idAccount +
-                ", dateOfCreation=" + dateOfCreation +
+                ", dateOfCreation='" + dateOfCreation + '\'' +
                 ", balance=" + balance +
-                ", typeOfAccount='" + typeOfAccount + '\'' +
+                ", typeOfAccount=" + typeOfAccount +
+                ", userId=" + userId +
                 '}';
     }
 }

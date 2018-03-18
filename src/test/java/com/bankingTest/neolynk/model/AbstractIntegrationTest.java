@@ -1,6 +1,7 @@
 package com.bankingTest.neolynk.model;
 
 
+import com.bankingTest.neolynk.core.AccountCore;
 import com.bankingTest.neolynk.core.UserCore;
 import com.bankingTest.neolynk.enums.AccountTypeEnum;
 import com.bankingTest.neolynk.utils.Tools;
@@ -20,15 +21,13 @@ public class AbstractIntegrationTest {
     //--- const
     protected static final int MIN_AGE = 18;
     protected static final int MAX_AGE =70;
-    protected static final int NUMBER_YEAR =99;
-
-
 
     @Rule
     public TestName testName = new TestName();
 
     //--- core banking
     public UserCore core = new UserCore();
+    public AccountCore accountCore = new AccountCore();
     public Tools tools = new Tools();
 
     /**
@@ -58,7 +57,10 @@ public class AbstractIntegrationTest {
         return r.nextInt((MAX_AGE - MIN_AGE) + 1) + MIN_AGE;
     }
 
-
+    /**
+     * Create fake account
+     * @return
+     */
     protected AccountModel createFakeAccount() {
         Faker faker = new Faker();
         Date now = new Date();
