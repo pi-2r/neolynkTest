@@ -19,6 +19,7 @@ public class AccountCore extends AbstractCore {
     //---- regex
     private static final String FOUND_USER_ID = "(?<=userId=)(.*)(?=\\})";
     private static final String ID_ACCOUNT = "(?<=idAccount=)(.*)(?=, dateOfCreation)";
+    private static final String BALANCE = "(?<=balance=)(.*)(?=, t)";
 
     /**
      * Return all information account
@@ -135,7 +136,8 @@ public class AccountCore extends AbstractCore {
 
             if ("balance".equals(keyName)) {
                 if( tools.checkIfDouble(changeValue)) {
-                    accountEdit.setBalance(Double.parseDouble(changeValue));
+                    Double tmpBalance = accountEdit.getBalance();
+                    accountEdit.setBalance(tools.calcul(changeValue, tmpBalance));
                 }
             }
             else if ("typeOfAccount".equals(keyName)) {
@@ -160,6 +162,11 @@ public class AccountCore extends AbstractCore {
         return null;
     }
 
+    /**
+     * Return all account per user
+     * @param userid
+     * @return
+     */
     public List<String> getAllAccountPerUser(UUID userid) {
         List<String> listUserAccount = new ArrayList<String>();
         if(tools.checkIfUUID(userid.toString())) {
@@ -182,6 +189,35 @@ public class AccountCore extends AbstractCore {
             LOG.info("========================> list all users: " + listUserAccount.size());
         }
         return listUserAccount;
+    }
+
+
+    /**
+     * Sum of balances of all the accounts of a given user
+     * @param userid
+     * @return
+     */
+    public Double getSumBalanceOfAllAccountPerUser(UUID userid) {
+        Double sumBalance = 0.0;
+        if(tools.checkIfUUID(userid.toString())) {
+            Set set = accountList.entrySet();
+            Iterator iterator = set.iterator();
+            while (iterator.hasNext()) {
+                Map.Entry mentry = (Map.Entry) iterator.next();
+
+                if (tools.regexFoundString(FOUND_USER_ID, mentry.getValue().toString())) {
+                    if (userid.toString().equals(tools.regexFoundAndExtractString(FOUND_USER_ID,
+                            mentry.getValue().toString()))) {
+
+                        //--- extract balance value
+                        sumBalance = sumBalance + Double.parseDouble(tools.regexFoundAndExtractString(BALANCE,
+                                mentry.getValue().toString()));
+
+                    }
+                }
+            }
+        }
+        return sumBalance;
     }
 
 }

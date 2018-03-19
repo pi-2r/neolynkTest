@@ -127,50 +127,64 @@ public class Tools {
         return null;
     }
 
-    private Double calcul(String value, Double oldBalance) {
-        String tmp = value.trim();
-        //--- detect "+"
-        double num1 =0;
-        double num2= 0;
+    /**
+     * Cacul operation
+     * @param value
+     * @param oldBalance
+     * @return
+     */
+    public Double calcul(String value, Double oldBalance) {
 
-            String [] operands = tmp.replaceAll("\\s+", "").split("[\\+\\-\\/\\*\\%\\^]");
+        double result = oldBalance;
 
-            String operator = tmp.replaceAll("(\\s+|\\d+|\\.)", "");
+        String operator = value.replaceAll("(\\s+|\\d+|\\.)", "");
 
-            Double [] numbers = new Double[operands.length];
-            for (int i = 0; i < operands.length; i++)
-            {
-                numbers[i] = new Double(operands[i]);
-            }
-
-            num1 = numbers[0];
-            num2 = numbers[1];
-
-            double result = 0;
-
+        if(checkIfDouble(value)){
+            double num1 =Double.parseDouble(value);
+            double num2= oldBalance;
             switch (operator)
             {
                 case "+":
-                    result = add(num1, num2);
+                    result = addCalCul(num1, num2);
                     break;
                 case "-":
+                    result = minusCalCul(Math.abs(num1), num2);
+                    break;
+                case "":
+                    result = addCalCul(num1, num2);
+                    break;
                 default:
-                    System.out.println("Not valid.");
+                    LOG.error("operation no valid");
             }
-
-
-
-        return oldBalance;
+        }
+        return result;
     }
 
-    public static double add(double num1, double num2)
+    /**
+     * addition
+     * @param num1
+     * @param num2
+     * @return
+     */
+    private double addCalCul(double num1, double num2)
     {
         double sum = num1 + num2;
         return sum;
     }
 
+    /**
+     * Minus
+     * @param num1
+     * @param num2
+     * @return
+     */
+    private double minusCalCul(double num1, double num2)
+    {
+        double sum = num1 - num2;
+        return sum;
+    }
     public static void main(String[] args){
         Tools tools = new Tools();
-        tools.calcul("800+1000089", 100.0);
+        LOG.info(tools.calcul("100", 100.0).toString());
     }
 }

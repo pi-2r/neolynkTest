@@ -63,11 +63,34 @@ public class ToolTest {
         final String string = "AccountModel{idAccount=2e19796f-31c3-4bbd-88ad-2a3ac4bc6cc7, dateOfCreation='2018-03-18', balance=0.14948617208157355, typeOfAccount=LIVRET_A, userId=3cc54563-6788-4af9-ad7e-fbe24d99ead9}";
         Assert.assertEquals(tools.regexFoundAndExtractString(regex, string), "2e19796f-31c3-4bbd-88ad-2a3ac4bc6cc7");
     }
+
     @Test
     public void regexFoundAndExtractString2() throws Exception {
         final String regex = "(?<=userId=)(.*)(?=\\})";
         final String string = "\"e19056a6-3969-4225-8bbf-66dc50ee0184\" -> \"AccountModel{idAccount=e19056a6-3969-4225-8bbf-66dc50ee0184, dateOfCreation='2018-03-18', balance=0.8979192077464005, typeOfAccount=LIVRET_A, userId=2f7cece3-a3b1-48a9-b840-bde5213728d3}\"";
         Assert.assertEquals(tools.regexFoundAndExtractString(regex, string), "2f7cece3-a3b1-48a9-b840-bde5213728d3");
+    }
+
+    @Test
+    public void calculOperationAddition() {
+        Assert.assertEquals(tools.calcul("100", 100.0).toString(), "200.0");
+        Assert.assertEquals(tools.calcul("+100", 100.0).toString(), "200.0");
+        //--- no addition, we save old balance
+        Assert.assertEquals(tools.calcul("çà_àç_çà", 100.0).toString(), "100.0");
+    }
+
+    @Test
+    public void calculOperationSubstraction() {
+        Assert.assertEquals(tools.calcul("-100", 100.0).toString(), "0.0");
+        //--- no addition, we save old balance
+        Assert.assertEquals(tools.calcul("çà_àç_çà", 100.0).toString(), "100.0");
+    }
+
+    @Test
+    public void regexFoundAndExtractBalance() throws Exception {
+        final String regex = "(?<=balance=)(.*)(?=, t)";
+        final String string = "AccountModel{idAccount=2e19796f-31c3-4bbd-88ad-2a3ac4bc6cc7, dateOfCreation='2018-03-18', balance=0.14948617208157355, typeOfAccount=LIVRET_A, userId=3cc54563-6788-4af9-ad7e-fbe24d99ead9}";
+        Assert.assertEquals(tools.regexFoundAndExtractString(regex, string), "0.14948617208157355");
     }
 
 }

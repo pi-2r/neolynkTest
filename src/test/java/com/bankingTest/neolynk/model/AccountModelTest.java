@@ -178,8 +178,6 @@ public class AccountModelTest extends AbstractIntegrationTest {
         core.saveUserEntity(newFakeUser2, newFakeUser2.getIdUser());
         Assert.assertNotNull(core.getSpecificUser(newFakeUser2.getIdUser()));
         AccountModel tmpo = accountCore.getSpecificAccount(newAccountModel.getIdAccount());
-        LOG.info("===============++++++> user id account: " +tmpo.getUserId().toString());
-        LOG.info("===============++++++> new user: " +newFakeUser2.getIdUser().toString());
         //--- edit account
         accountCore.editSpecificAccountById(newAccountModel.getIdAccount(), "userId",
                 newFakeUser2.getIdUser().toString());
@@ -255,9 +253,104 @@ public class AccountModelTest extends AbstractIntegrationTest {
         Assert.assertEquals(nbAccountByUser2.size(), 1);
     }
 
+    @Test
+    public void createSaveAndUpdateAccountBalance() throws Exception {
+        //--- create account
+        AccountModel newAccountModel = createFakeAccount();
+        LOG.debug(newAccountModel.toString());
+        Assert.assertNotNull(newAccountModel);
+
+        //--- save account
+        accountCore.saveAccountEntity(newAccountModel, newAccountModel.getIdAccount());
+        Assert.assertNotNull(accountCore.getSpecificAccount(newAccountModel.getIdAccount()));
+        //--- save balance
+        Double oldBalance = accountCore.getSpecificAccount(newAccountModel.getIdAccount()).getBalance();
+
+        //--- edit account
+        accountCore.editSpecificAccountById(newAccountModel.getIdAccount(), "balance", "200");
+
+        //--- get and check account
+        AccountModel tmp = accountCore.getSpecificAccount(newAccountModel.getIdAccount());
+        Assert.assertNotNull(tmp);
+        Assert.assertEquals(tmp.getBalance().toString(),tools.calcul("200", oldBalance).toString());
+    }
     @After
     public void deleteHasMap() {
         accountCore.getAccountList().clear();
+    }
+
+    @Test
+    public void createSaveMultiAccountWithUserAndSumOfBalanceByUser() throws Exception {
+        Double tmpBalanceUser1 = 0.0;
+        Double tmpBalanceUser2 = 0.0;
+
+        //---- create user1
+        UserModel newFakeUser1 = createFakeUser();
+        LOG.debug(newFakeUser1.toString());
+        core.saveUserEntity(newFakeUser1, newFakeUser1.getIdUser());
+        Assert.assertNotNull(core.getSpecificUser(newFakeUser1.getIdUser()));
+
+        //---- create user2
+        UserModel newFakeUser2 = createFakeUser();
+        LOG.debug(newFakeUser2.toString());
+        core.saveUserEntity(newFakeUser2, newFakeUser2.getIdUser());
+        Assert.assertNotNull(core.getSpecificUser(newFakeUser2.getIdUser()));
+
+
+        //--- create account1
+        AccountModel newAccountModel1 = createFakeAccount();
+        LOG.debug(newAccountModel1.toString());
+        Assert.assertNotNull(newAccountModel1);
+
+        //--- create account2
+        AccountModel newAccountModel2 = createFakeAccount();
+        LOG.debug(newAccountModel2.toString());
+        Assert.assertNotNull(newAccountModel2);
+
+        //--- create account3
+        AccountModel newAccountModel3 = createFakeAccount();
+        LOG.debug(newAccountModel3.toString());
+        Assert.assertNotNull(newAccountModel2);
+
+        //*************************************
+        // Link account 1&2 with the user 1
+        //*************************************
+
+        //--- link account1 with a user1
+        accountCore.saveAccountEntityWithUser(newAccountModel1, newAccountModel1.getIdAccount(), newFakeUser1.getIdUser());
+        AccountModel tmpAccount =  accountCore.getSpecificAccount(newAccountModel1.getIdAccount());
+        Assert.assertNotNull(accountCore.getSpecificAccount(newAccountModel1.getIdAccount()));
+        Assert.assertEquals(tmpAccount.getUserId(), newFakeUser1.getIdUser());
+        tmpBalanceUser1 = tmpBalanceUser1 + accountCore.getSpecificAccount(newAccountModel1.getIdAccount()).getBalance();
+
+        //--- link account2 with a user1
+        accountCore.saveAccountEntityWithUser(newAccountModel2, newAccountModel2.getIdAccount(), newFakeUser1.getIdUser());
+        AccountModel tmpAccount2 =  accountCore.getSpecificAccount(newAccountModel2.getIdAccount());
+        Assert.assertNotNull(accountCore.getSpecificAccount(newAccountModel2.getIdAccount()));
+        Assert.assertEquals(tmpAccount2.getUserId(), newFakeUser1.getIdUser());
+        tmpBalanceUser1 = tmpBalanceUser1 + accountCore.getSpecificAccount(newAccountModel2.getIdAccount()).getBalance();
+
+
+        //*************************************
+        // Link account 3 with the user 2
+        //*************************************
+
+        //--- link account2 with a user1
+        accountCore.saveAccountEntityWithUser(newAccountModel3, newAccountModel3.getIdAccount(), newFakeUser2.getIdUser());
+        AccountModel tmpAccount3 =  accountCore.getSpecificAccount(newAccountModel3.getIdAccount());
+        Assert.assertNotNull(accountCore.getSpecificAccount(newAccountModel3.getIdAccount()));
+        Assert.assertEquals(tmpAccount3.getUserId(), newFakeUser2.getIdUser());
+        tmpBalanceUser2 = tmpBalanceUser2 + accountCore.getSpecificAccount(newAccountModel3.getIdAccount()).getBalance();
+
+        //*************************************
+        // Get all sum balance account by user
+        //*************************************
+        Double sumUser1 = accountCore.getSumBalanceOfAllAccountPerUser(newFakeUser1.getIdUser());
+        Double sumUser2 = accountCore.getSumBalanceOfAllAccountPerUser(newFakeUser2.getIdUser());
+
+        Assert.assertEquals(tmpBalanceUser1, sumUser1);
+        Assert.assertEquals(tmpBalanceUser2, sumUser2);
+
     }
 
 }
