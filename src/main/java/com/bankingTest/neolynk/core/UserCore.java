@@ -3,12 +3,14 @@ package com.bankingTest.neolynk.core;
 import com.bankingTest.neolynk.model.UserModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 /**
  * Created by zen on 16/03/18.
  */
+@Service
 public class UserCore extends AbstractCore {
 
     /** The application logger */
@@ -110,6 +112,5 @@ public class UserCore extends AbstractCore {
         LOG.debug("Can't change {} parameter with this value: {}, for the user with {} uuid", value, keyName, changeValue);
         return null;
     }
-
 
 }

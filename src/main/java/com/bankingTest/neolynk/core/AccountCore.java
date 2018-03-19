@@ -4,12 +4,14 @@ import com.bankingTest.neolynk.enums.AccountTypeEnum;
 import com.bankingTest.neolynk.model.AccountModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 /**
  * Created by zen on 17/03/18.
  */
+@Service
 public class AccountCore extends AbstractCore {
 
     /** The application logger */
@@ -147,10 +149,7 @@ public class AccountCore extends AbstractCore {
             }
             else if ("userId".equals(keyName)) {
                 if(tools.checkIfUUID(changeValue)) {
-                    //-- check if the user exist
-                    //if (userCore.getSpecificUser(UUID.fromString(changeValue)) != null) {
                         accountEdit.setUserId(UUID.fromString(changeValue));
-                    //}
                 }
             }
 
@@ -171,7 +170,6 @@ public class AccountCore extends AbstractCore {
         List<String> listUserAccount = new ArrayList<String>();
         if(tools.checkIfUUID(userid.toString())) {
 
-
             Set set = accountList.entrySet();
             Iterator iterator = set.iterator();
             while (iterator.hasNext()) {
@@ -190,7 +188,6 @@ public class AccountCore extends AbstractCore {
         }
         return listUserAccount;
     }
-
 
     /**
      * Sum of balances of all the accounts of a given user

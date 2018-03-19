@@ -82,6 +82,12 @@ public class ToolTest {
     @Test
     public void calculOperationSubstraction() {
         Assert.assertEquals(tools.calcul("-100", 100.0).toString(), "0.0");
+        Assert.assertEquals(tools.calcul("-100", 200.0).toString(), "100.0");
+        Assert.assertEquals(tools.calcul("-100", -200.0).toString(), "-300.0");
+        Assert.assertEquals(tools.calcul("-100", 0.0).toString(), "-100.0");
+        Assert.assertEquals(tools.calcul("-100", -0.0).toString(), "-100.0");
+        Assert.assertEquals(tools.calcul("-300", -200.0).toString(), "-500.0");
+
         //--- no addition, we save old balance
         Assert.assertEquals(tools.calcul("çà_àç_çà", 100.0).toString(), "100.0");
     }

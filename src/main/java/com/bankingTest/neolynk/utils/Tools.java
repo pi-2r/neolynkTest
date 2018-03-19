@@ -3,6 +3,7 @@ package com.bankingTest.neolynk.utils;
 import com.bankingTest.neolynk.enums.AccountTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,6 +12,7 @@ import java.util.UUID;
 /**
  * Created by zen on 16/03/18.
  */
+@Service
 public class Tools {
 
     /** The application logger */
@@ -148,7 +150,7 @@ public class Tools {
                     result = addCalCul(num1, num2);
                     break;
                 case "-":
-                    result = minusCalCul(Math.abs(num1), num2);
+                    result = minusCalCul(num1, num2);
                     break;
                 case "":
                     result = addCalCul(num1, num2);
@@ -166,8 +168,7 @@ public class Tools {
      * @param num2
      * @return
      */
-    private double addCalCul(double num1, double num2)
-    {
+    private double addCalCul(double num1, double num2) {
         double sum = num1 + num2;
         return sum;
     }
@@ -178,13 +179,28 @@ public class Tools {
      * @param num2
      * @return
      */
-    private double minusCalCul(double num1, double num2)
-    {
-        double sum = num1 - num2;
+    private double minusCalCul(double num1, double num2) {
+        double sum = 0.0;
+        if( num2 <= 0 && num1 <0) {
+            if (num2 > num1)
+                sum = num1 - Math.abs(num2);
+            else
+                sum = num2 -  Math.abs(num1);
+        }
+        else if (num2 >= 0 && num1 >=0) {
+            if(num2 > num1) {
+                sum = Math.abs(num2) - Math.abs(num1);
+            }
+            else
+                sum = num1 - Math.abs(num2);
+        }else if (num2 > 0 && num1 <0) {
+            if(num2 > num1) {
+                sum = Math.abs(num2) - Math.abs(num1);
+            }
+            else
+                sum = num1 - Math.abs(num2);
+        }
         return sum;
     }
-    public static void main(String[] args){
-        Tools tools = new Tools();
-        LOG.info(tools.calcul("100", 100.0).toString());
-    }
+
 }

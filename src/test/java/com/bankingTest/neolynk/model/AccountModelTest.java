@@ -274,10 +274,6 @@ public class AccountModelTest extends AbstractIntegrationTest {
         Assert.assertNotNull(tmp);
         Assert.assertEquals(tmp.getBalance().toString(),tools.calcul("200", oldBalance).toString());
     }
-    @After
-    public void deleteHasMap() {
-        accountCore.getAccountList().clear();
-    }
 
     @Test
     public void createSaveMultiAccountWithUserAndSumOfBalanceByUser() throws Exception {
@@ -295,7 +291,6 @@ public class AccountModelTest extends AbstractIntegrationTest {
         LOG.debug(newFakeUser2.toString());
         core.saveUserEntity(newFakeUser2, newFakeUser2.getIdUser());
         Assert.assertNotNull(core.getSpecificUser(newFakeUser2.getIdUser()));
-
 
         //--- create account1
         AccountModel newAccountModel1 = createFakeAccount();
@@ -353,4 +348,8 @@ public class AccountModelTest extends AbstractIntegrationTest {
 
     }
 
+    @After
+    public void deleteHasMap() {
+        accountCore.getAccountList().clear();
+    }
 }
