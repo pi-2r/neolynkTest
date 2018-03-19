@@ -1,6 +1,5 @@
 package com.bankingTest.neolynk.utils;
 
-import com.bankingTest.neolynk.core.AccountCore;
 import com.bankingTest.neolynk.enums.AccountTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,7 +102,6 @@ public class Tools {
         final Matcher matcher = pattern.matcher(foundString);
 
         if (matcher.find()) {
-            System.out.println("Full match: " + matcher.group(0));
             for (int i = 1; i <= matcher.groupCount(); i++) {
                 LOG.info("Group " + i + ": " + matcher.group(i));
                 return true;
@@ -127,5 +125,52 @@ public class Tools {
            return matcher.group(0);
         }
         return null;
+    }
+
+    private Double calcul(String value, Double oldBalance) {
+        String tmp = value.trim();
+        //--- detect "+"
+        double num1 =0;
+        double num2= 0;
+
+            String [] operands = tmp.replaceAll("\\s+", "").split("[\\+\\-\\/\\*\\%\\^]");
+
+            String operator = tmp.replaceAll("(\\s+|\\d+|\\.)", "");
+
+            Double [] numbers = new Double[operands.length];
+            for (int i = 0; i < operands.length; i++)
+            {
+                numbers[i] = new Double(operands[i]);
+            }
+
+            num1 = numbers[0];
+            num2 = numbers[1];
+
+            double result = 0;
+
+            switch (operator)
+            {
+                case "+":
+                    result = add(num1, num2);
+                    break;
+                case "-":
+                default:
+                    System.out.println("Not valid.");
+            }
+
+
+
+        return oldBalance;
+    }
+
+    public static double add(double num1, double num2)
+    {
+        double sum = num1 + num2;
+        return sum;
+    }
+
+    public static void main(String[] args){
+        Tools tools = new Tools();
+        tools.calcul("800+1000089", 100.0);
     }
 }

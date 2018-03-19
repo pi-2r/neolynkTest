@@ -7,6 +7,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 /**
  * Created by zen on 16/03/18.
  */
@@ -27,7 +29,6 @@ public class AccountModelTest extends AbstractIntegrationTest {
         LOG.debug(accountInitModel.toString());
         Assert.assertNotNull(accountInitModel);
     }
-
 
     @Test
     public void createNewFakeAccount() throws Exception {
@@ -152,7 +153,6 @@ public class AccountModelTest extends AbstractIntegrationTest {
         Assert.assertNull(accountCore.getSpecificAccount(newAccountModel.getIdAccount()));
     }
 
-
     @Test
     public void createSaveAndUpdateAccountWithTwoUser() throws Exception {
         //---- create user1
@@ -189,6 +189,72 @@ public class AccountModelTest extends AbstractIntegrationTest {
         Assert.assertNotNull(tmp);
         Assert.assertEquals(tmp.getUserId().toString(),newFakeUser2.getIdUser().toString());
     }
+
+    @Test
+    public void createSaveMultiAccountWithUserAndFindByUser() throws Exception {
+        //---- create user1
+        UserModel newFakeUser1 = createFakeUser();
+        LOG.debug(newFakeUser1.toString());
+        core.saveUserEntity(newFakeUser1, newFakeUser1.getIdUser());
+        Assert.assertNotNull(core.getSpecificUser(newFakeUser1.getIdUser()));
+
+        //---- create user2
+        UserModel newFakeUser2 = createFakeUser();
+        LOG.debug(newFakeUser2.toString());
+        core.saveUserEntity(newFakeUser2, newFakeUser2.getIdUser());
+        Assert.assertNotNull(core.getSpecificUser(newFakeUser2.getIdUser()));
+
+
+        //--- create account1
+        AccountModel newAccountModel1 = createFakeAccount();
+        LOG.debug(newAccountModel1.toString());
+        Assert.assertNotNull(newAccountModel1);
+
+        //--- create account2
+        AccountModel newAccountModel2 = createFakeAccount();
+        LOG.debug(newAccountModel2.toString());
+        Assert.assertNotNull(newAccountModel2);
+
+        //--- create account3
+        AccountModel newAccountModel3 = createFakeAccount();
+        LOG.debug(newAccountModel3.toString());
+        Assert.assertNotNull(newAccountModel2);
+
+        //*************************************
+        // Link account 1&2 with the user 1
+        //*************************************
+
+        //--- link account1 with a user1
+        accountCore.saveAccountEntityWithUser(newAccountModel1, newAccountModel1.getIdAccount(), newFakeUser1.getIdUser());
+        AccountModel tmpAccount =  accountCore.getSpecificAccount(newAccountModel1.getIdAccount());
+        Assert.assertNotNull(accountCore.getSpecificAccount(newAccountModel1.getIdAccount()));
+        Assert.assertEquals(tmpAccount.getUserId(), newFakeUser1.getIdUser());
+
+        //--- link account2 with a user1
+        accountCore.saveAccountEntityWithUser(newAccountModel2, newAccountModel2.getIdAccount(), newFakeUser1.getIdUser());
+        AccountModel tmpAccount2 =  accountCore.getSpecificAccount(newAccountModel1.getIdAccount());
+        Assert.assertNotNull(accountCore.getSpecificAccount(newAccountModel1.getIdAccount()));
+        Assert.assertEquals(tmpAccount2.getUserId(), newFakeUser1.getIdUser());
+
+        //*************************************
+        // Link account 3 with the user 2
+        //*************************************
+
+        //--- link account2 with a user1
+        accountCore.saveAccountEntityWithUser(newAccountModel3, newAccountModel3.getIdAccount(), newFakeUser2.getIdUser());
+        AccountModel tmpAccount3 =  accountCore.getSpecificAccount(newAccountModel3.getIdAccount());
+        Assert.assertNotNull(accountCore.getSpecificAccount(newAccountModel3.getIdAccount()));
+        Assert.assertEquals(tmpAccount3.getUserId(), newFakeUser2.getIdUser());
+
+        //*************************************
+        // Get all account for one user
+        //*************************************
+        List<String> nbAccountByUser1 = accountCore.getAllAccountPerUser(newFakeUser1.getIdUser());
+        Assert.assertEquals(nbAccountByUser1.size(), 2);
+        List<String> nbAccountByUser2 = accountCore.getAllAccountPerUser(newFakeUser2.getIdUser());
+        Assert.assertEquals(nbAccountByUser2.size(), 1);
+    }
+
     @After
     public void deleteHasMap() {
         accountCore.getAccountList().clear();

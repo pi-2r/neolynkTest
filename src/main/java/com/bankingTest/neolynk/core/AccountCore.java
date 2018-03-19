@@ -15,7 +15,7 @@ public class AccountCore extends AbstractCore {
     /** The application logger */
     private static final Logger LOG = LoggerFactory.getLogger(AccountCore.class);
 
-    private UserCore userCore= new UserCore();
+
     //---- regex
     private static final String FOUND_USER_ID = "(?<=userId=)(.*)(?=\\})";
     private static final String ID_ACCOUNT = "(?<=idAccount=)(.*)(?=, dateOfCreation)";
@@ -159,4 +159,29 @@ public class AccountCore extends AbstractCore {
         LOG.debug("Can't change {} parameter with this value: {}, for the account with {} uuid", value, keyName, changeValue);
         return null;
     }
+
+    public List<String> getAllAccountPerUser(UUID userid) {
+        List<String> listUserAccount = new ArrayList<String>();
+        if(tools.checkIfUUID(userid.toString())) {
+
+
+            Set set = accountList.entrySet();
+            Iterator iterator = set.iterator();
+            while (iterator.hasNext()) {
+                Map.Entry mentry = (Map.Entry) iterator.next();
+
+                if (tools.regexFoundString(FOUND_USER_ID, mentry.getValue().toString())) {
+                    if (userid.toString().equals(tools.regexFoundAndExtractString(FOUND_USER_ID,
+                            mentry.getValue().toString()))) {
+                        LOG.info("found user in account list: " + mentry.getValue().toString());
+                        //--- extract and save account by userId
+                        listUserAccount.add(tools.regexFoundAndExtractString(ID_ACCOUNT, mentry.getValue().toString()));
+                    }
+                }
+            }
+            LOG.info("========================> list all users: " + listUserAccount.size());
+        }
+        return listUserAccount;
+    }
+
 }
