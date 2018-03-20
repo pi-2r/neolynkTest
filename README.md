@@ -21,7 +21,7 @@ find out the wealth of a user).
 Some guidelines:
 
  - Develop this mini project in TDD (test driver development or test first) manner.
- - Donâ€™t use any database to store users and accounts. You can use a simple java data
+ - Don’t use any database to store users and accounts. You can use a simple java data
 structure such as list, map etc. to store your data in memory.
  - No need to use any framework.
  - No need to create any GUI (user interface), just proper unit tests to cover all the cases
@@ -40,7 +40,9 @@ Stack technique to be used:
 Follow this steps
 
 > git clone https://github.com/pi-2r/neolynkTest.git
+
 > cd neolynkTest
+
 > mvn clean install
 
 Result:
@@ -56,5 +58,6 @@ run this command in your neolynkTest folder:
 ![enter image description here](https://image.ibb.co/bXmNFH/neolynk2.png)
 
 In your browser, open this page: http://localhost:8080/swagger-ui.html#/
+
 Result:
 ![Swagger documentation](https://image.ibb.co/j7ZZvH/neolynk3.png) 
