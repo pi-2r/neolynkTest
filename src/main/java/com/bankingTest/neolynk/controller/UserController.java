@@ -47,7 +47,7 @@ public class UserController {
     @RequestMapping(value = "/show/{id}", method= RequestMethod.GET)
     public ResponseEntity<UserModel> showProduct(@RequestParam(value = "userId")  String userId){
         if(tools.checkIfUUID(userId)) {
-            return new ResponseEntity(userCore.getSpecificUser(UUID.fromString(userId)), HttpStatus.OK);
+            return new ResponseEntity(userCore.getSpecificUser(UUID.fromString(userId)), HttpStatus.CREATED);
         }
         return new ResponseEntity("Bad request", HttpStatus.BAD_REQUEST);
     }

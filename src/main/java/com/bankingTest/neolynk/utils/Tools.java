@@ -187,18 +187,8 @@ public class Tools {
             else
                 sum = num2 -  Math.abs(num1);
         }
-        else if (num2 >= 0 && num1 >=0) {
-            if(num2 > num1) {
+        else {
                 sum = Math.abs(num2) - Math.abs(num1);
-            }
-            else
-                sum = num1 - Math.abs(num2);
-        }else if (num2 > 0 && num1 <0) {
-            if(num2 > num1) {
-                sum = Math.abs(num2) - Math.abs(num1);
-            }
-            else
-                sum = num1 - Math.abs(num2);
         }
         return sum;
     }

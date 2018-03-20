@@ -60,14 +60,14 @@ public class accountController {
         if (userId !=null && tools.checkIfUUID(userId)) {
             if (userCore.getSpecificUser(UUID.fromString(userId)) != null){
                     accountCore.saveAccountEntityWithUser(accountModel, accountModel.getIdAccount(), UUID.fromString(userId));
-                    return new ResponseEntity("Account with user is saved successfully", HttpStatus.OK);
+                    return new ResponseEntity("Account with user is saved successfully", HttpStatus.CREATED);
                 }
                 else {
-                    return new ResponseEntity("userId doesn't exist", HttpStatus.OK);
+                    return new ResponseEntity("User doesn't exist", HttpStatus.BAD_REQUEST);
                 }
         }else {
             accountCore.saveAccountEntity(accountModel, accountModel.getIdAccount());
-            return new ResponseEntity("Account with no user is saved successfully", HttpStatus.OK);
+            return new ResponseEntity("Account with no user is saved successfully", HttpStatus.CREATED);
         }
 
     }
@@ -81,18 +81,19 @@ public class accountController {
 
         if (uuid != null && tools.checkIfUUID(uuid)) {
             if ("userId".equals(keyName)){
-                if (!tools.checkIfInteger(changeValue) && tools.checkIfUUID(changeValue)) {
+                if (tools.checkIfUUID(changeValue)) {
                     if (userCore.getSpecificUser(UUID.fromString(changeValue)) != null) {
                         accountCore.editSpecificAccountById(UUID.fromString(uuid), keyName, changeValue);
                         return new ResponseEntity(accountCore.getSpecificAccount(UUID.fromString(uuid)), HttpStatus.OK);
                     }
+                }else {
+                    return new ResponseEntity("User doesn't exist", HttpStatus.BAD_REQUEST);
                 }
             }
             else {
                 accountCore.editSpecificAccountById(UUID.fromString(uuid), keyName, changeValue);
                 return new ResponseEntity(accountCore.getSpecificAccount(UUID.fromString(uuid)), HttpStatus.OK);
             }
-
         }
         return new ResponseEntity("Error during update", HttpStatus.BAD_REQUEST);
     }
@@ -105,7 +106,7 @@ public class accountController {
             if (userCore.getSpecificUser(UUID.fromString(userId)) != null) {
                 return new ResponseEntity(accountCore.getAllAccountPerUser(UUID.fromString(userId)), HttpStatus.OK);
             }else {
-                return new ResponseEntity("User not exist", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity("User doesn't exist", HttpStatus.BAD_REQUEST);
             }
         }
         return new ResponseEntity("Bad request", HttpStatus.BAD_REQUEST);
@@ -119,7 +120,7 @@ public class accountController {
             if (userCore.getSpecificUser(UUID.fromString(userId)) != null) {
                 return new ResponseEntity(accountCore.getSumBalanceOfAllAccountPerUser(UUID.fromString(userId)), HttpStatus.OK);
             }else {
-                return new ResponseEntity("User not exist", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity("User doesn't exist", HttpStatus.BAD_REQUEST);
             }
         }
         return new ResponseEntity("Bad request", HttpStatus.BAD_REQUEST);
