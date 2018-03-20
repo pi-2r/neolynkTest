@@ -21,7 +21,7 @@ find out the wealth of a user).
 Some guidelines:
 
  - Develop this mini project in TDD (test driver development or test first) manner.
- - Don’t use any database to store users and accounts. You can use a simple java data
+ - Donâ€™t use any database to store users and accounts. You can use a simple java data
 structure such as list, map etc. to store your data in memory.
  - No need to use any framework.
  - No need to create any GUI (user interface), just proper unit tests to cover all the cases
@@ -50,6 +50,7 @@ Result:
 ## How to run great interface ?
 
 **note:** it's just for fun
+
 run this command in your neolynkTest folder:
 
  - mvn spring-boot:run
